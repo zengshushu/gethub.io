@@ -1,0 +1,606 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>薪火</title>
+  <link rel="stylesheet" href="./css/index.css?2021072011" />
+  <link rel="stylesheet"
+    href="./css/photo-sphere-viewer.min.css" />
+  <link rel="stylesheet" href="./css/markers.min.css" />
+  <link rel="stylesheet" href="./css/swiper.min.css" />
+  <style>
+    .psv-loader-canvas {
+      display: none;
+    }
+
+    .psv-overlay {
+      background: none;
+    }
+
+    .psv-container {
+      background: none;
+    }
+
+    .psv-loader-image {
+      width: 50px;
+      height: 50px;
+      -webkit-animation: circle 0.5s linear infinite;
+      animation: circle 0.5s linear infinite;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+    }
+
+    @-webkit-keyframes circle {
+      0% {
+        -webkit-transform: rotate(0deg);
+      }
+
+      25% {
+        -webkit-transform: rotate(90deg);
+      }
+
+      50% {
+        -webkit-transform: rotate(180deg);
+      }
+
+      75% {
+        -webkit-transform: rotate(270deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loading">
+    <div class="loading_word_group">
+    
+      <div class="loading_progress">
+        <p id="loading_pro">loading</p>
+      </div>
+     
+    </div>
+     </div>
+  <div class="blacnkbgs"></div>
+  <div id="viewer"></div>
+  <div class="bottomGroup">
+    <div class="leftBtn" onclick="changeSence('left')" style=""></div>
+    <div class="rightBtn" onclick="changeSence('right')"></div>
+  </div>
+  <div class="btnGroup">
+    <div class="shareBtn">
+      <!-- 分享 -->
+    </div>
+    <div class="vrBtn" onclick="getPermission()" style="margin-top: 3vw;"></div>
+    <div class="audioBtn play"></div>
+  </div>
+  <audio src="https://cdn.dalalapic.com/h5/adang/bg-short.mp3" id="audios"
+    style="position: absolute;left: 99999999999999px;top: 999999999px;" loop="true"></audio>
+  <div class="senceNum">
+    <img id="Num" src="./img/no1.png?888" />
+  </div>
+  <img class="backBtn" src="./img/back.png?777">
+  <div class="mask" style="display: none;opacity: 1;">
+    <div class="swiper-container">
+      <div class="swiper-wrapper" id="images">
+
+      </div>
+      <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+    </div>
+  </div>
+  <video id="video" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"
+    x5-video-player-type="h5" controls="controls" src="" style="display: none;"></video>
+  <div class="iframe_mask">
+    <iframe id="iframe" frameborder="0" scrolling="yes" src=""></iframe>
+  </div>
+
+
+  <div class="shareInfo">
+    <img class="backBtn2" src="https://cdn.dalalapic.com/h5/adang/img/icon/close.png">
+    <img id="shareImg" class="shareImg" src=""/>
+    <span onclick="gotoPage()" class="aHref"></span>
+    <div class="tipWord"></div>
+    <canvas id="shareCanvas" style="display: none;" class="shareCanvas" width="619" height="1100"></canvas>
+</div>
+<div style="display: none;">
+  <script type="text/javascript">document.write(unescape("%3Cspan id='cnzz_stat_icon_1280128144'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1280128144' type='text/javascript'%3E%3C/script%3E"));</script>
+</div>
+  <script src="./js/three.min.js"></script>
+  <script src="./js/browser.min.js"></script>
+  <script src="./js/photo-sphere-viewer.min.js"></script>
+  <script src="./js/markers.min.js"></script>
+	<script src="./js/gyroscope.js"></script>
+  <script src="./js/jquery-1.12.3.min.js"></script>
+  <script src="./js/swiper.min.js"></script>
+  <script src="./js/drawCanvas.js"></script>
+  <script>
+    let markers_2 = [
+      {
+        // 该标记会弹出弹窗
+        id: '1',
+        longitude: 0,
+        latitude: 0,
+        html: `
+              <div class="circle">
+                <span class="circle1 animation1"></span>
+                <span class="circle2 animation"></span>
+                <span class="circle3 animation2"></span>
+                <span class="circle4">详情</span>
+                </div>
+              `,
+        width: 50,
+        height: 50,
+        anchor: 'bottom center',
+        
+      },
+      {
+        // 该标记会弹出弹窗
+        id: '2',
+        longitude: 0.84,
+        latitude: 0.13,
+        html: `
+              <div class="circle">
+                <span class="circle1 animation1"></span>
+                <span class="circle2 animation"></span>
+                <span class="circle3 animation2"></span>
+                <span class="circle4">张炽</span>
+                </div>
+              `,
+        width: 50,
+        height: 50,
+        anchor: 'bottom center',
+        
+
+      },
+    ]
+    let markers_1 = [
+      {
+        // 该标记会弹出弹窗
+        id: '1',
+        longitude: 0,
+        latitude: 0,
+        html: `
+              <div class="circle">
+                <span class="circle1 animation1"></span>
+                <span class="circle2 animation"></span>
+                <span class="circle3 animation2"></span>
+                <span class="circle4">视频</span>
+                </div>
+              `,
+        width: 50,
+        height: 50,
+        anchor: 'bottom center',
+        
+
+      },
+      {
+        // 该标记会弹出弹窗
+        id: '2',
+        longitude: 0.94,
+        latitude: 0.1,
+        html: `
+              <div class="circle">
+                <span class="circle1 animation1"></span>
+                <span class="circle2 animation"></span>
+                <span class="circle3 animation2"></span>
+                <span class="circle4" style="width:200%;left:-50%">图文音乐</span>
+                </div>
+              `,
+        width: 50,
+        height: 50,
+        anchor: 'bottom center',
+        
+
+      },
+    
+    ]
+ const viewer = new PhotoSphereViewer.Viewer({
+      // 全景图根节点
+      container: document.querySelector('#viewer'),
+      // 全景图图片路径
+      panorama: './img/old/0-tiny.jpg?55656522277',
+      //loadingImg: './img/loading_gif.png',
+      navbar: false,
+      defaultLong: '-1',
+      minFov: '10',
+      autorotateDelay: '10000',
+      defaultZoomLvl: '20',
+      moveInertia: true,
+      lang: {
+				gyroscope : 'Gyroscope',
+			},
+      plugins: [
+        [PhotoSphereViewer.MarkersPlugin, {
+          markers: markers_1,
+        }],
+        PhotoSphereViewer.GyroscopePlugin
+      ],
+    })
+    // viewer.on('ready', function () {  //准备就绪
+    //   // viewer.toggleAutorotate();   //自动播放
+    //      //播放背景音乐
+    // });
+    $(".audioBtn").on("click", function () {
+      if ($(this).hasClass('play')) {
+        $(this).removeClass('play');
+        $('#audios')[0].pause();
+      } else {
+        $(this).addClass('play');
+        $('#audios')[0].play();
+      }
+
+    })
+    var vr_open = true;
+    function getPermission() {
+      if(vr_open){
+        vr_open= false;
+        $(".vrBtn").css("background-image",'url(./img/ico_close.png)')
+      }else{
+        vr_open= true;
+        $(".vrBtn").css("background-image",'url(./img/ico_VR.png)')
+      }
+      var gyroscopePlugin = viewer.getPlugin(PhotoSphereViewer.GyroscopePlugin);
+      gyroscopePlugin.toggle();
+      
+    }
+
+    var markersPlugin = viewer.getPlugin(PhotoSphereViewer.MarkersPlugin);
+    let num = 1;
+    function changeSence(type) {
+      if (type == 'left') {
+        num--
+      } else {
+        num++
+      }
+      if (num != 1) {
+        $(".leftBtn").show();
+      } else {
+        $(".leftBtn").hide();
+      }
+      if (num != 2) {
+        $(".rightBtn").show();
+      } else {
+        $(".rightBtn").hide();
+      }
+      viewer.setPanorama(
+        `./img/old/${num-1}-tiny.jpg?557788668866`
+      )
+      $("#Num").attr("src", `./img/no${num}.png?66677`)
+      markersPlugin.clearMarkers()
+      setTimeout(()=>{
+        markersPlugin.setMarkers(eval('markers_' + num));
+      },2000)
+    }
+    markersPlugin.on('select-marker', (e, marker) => {
+      console.log(e);
+      console.log(marker);
+      showMakerContent(marker.id)
+    });
+    $(".backBtn").on("click", function () {
+      console.log(6666)
+      $(".mask").hide();
+      $(".backBtn").hide();
+      $(".iframe_mask").hide();
+        $("body").css("position","relative")
+      $("#iframe").attr('src', $("#iframe").attr('src'));
+      setTimeout(()=>{
+        $("#iframe").attr('src',' ');
+      },1000)
+      audioStatus = false;
+      player.pause(); 
+      if ($('.audioBtn').hasClass('play')) {
+      $('#audios')[0].play();
+      }
+    })
+    var swiper = new Swiper('.swiper-container', {
+      loop: false, // 循环模式选项
+      spaceBetween: 0,
+      observer: true,
+      observeParents: true,
+      zoom : true,
+    })
+    //不同页的点
+    function showMakerContent(id) {
+      $('#audios')[0].pause();
+      let image = ''
+      if (num == 1) {
+        showMakerTwoImage(id)
+        return;
+      }
+      if (num == 2) {
+        showMakerOneImage(id)
+        return;
+      }
+   
+    }
+    function showMakerOneImage(id) {
+      
+      if (id == 1) {
+        $(".backBtn").show();
+        $(".iframe_mask").show();
+        $("#iframe").attr('src', 'https://www.17sucai.com/preview/419258/2021-07-30/3dMenu/index.html')
+      }
+    
+    }
+
+    function showMakerTwoImage(id) {
+      
+      if (id == 1) {
+        playVideo('https://cdn.dalalapic.com/h5/adang/img/开机动画.mp4')
+        
+      }
+      if (id == 2) {
+        $(".backBtn").show();
+        showMakerHtml(4);
+        playNobgAudio('https://cdn.dalalapic.com/h5/adang/bg-short.mp3');
+      }
+    
+    }
+
+    function showMakerHtml(no) {
+      let image = '';
+     // if(no==14){
+         image = `https://cdn.dalalapic.com/h5/adang/img/0/0_红色金融背后的智慧、坚忍与情怀.jpg`;
+      // }else{
+      //    image = `./img/poster/${no}.png?778866`;
+      // }
+      
+      let html = `<div class="swiper-slide" style="width: 414px;"><div class="swiper-zoom-container"> <img class="swiperImg"
+            src="${image}"></div></div>`
+      $("#images").html(html)
+      $(".mask").show();
+    }
+    const player = new Audio()
+    function playNobgAudio(mus) {
+      $('#audios')[0].pause();
+      player.controls = true  //这样控件才能显示出来
+      player.src = mus  //音乐的路径
+      player.play();
+    }
+
+
+    $("#playIco").on("click",function(){
+      if(audioStatus){
+        audioStatus = false;
+        player.pause();
+      $("#playIco").attr("src", './img/play.png');
+        $(".voice_gif").hide();
+      }else{
+        audioStatus = true;
+        player.play();
+        $("#playIco").attr("src", './img/pause.png');
+      $(".voice_gif").show();
+      }
+      
+    })
+    function playVideo(url) {
+      
+      $('#audios')[0].pause();
+      // 暂停播放背景声音
+      // if(iswx() && isFirstClick){
+      //   isFirstClick =false
+      document.getElementById('audios').pause();
+      //$('.audioBtn').removeClass('play');
+      $("#video").show();
+      $("#video").attr('src', url);
+      document.getElementById('video').play();
+      try {
+        document.getElementById('video').webkitRequestFullScreen();
+        document.requestFullscreen();
+        document.webkitRequestFullScreen();
+      } catch (e) {
+        console.log(e)
+      }
+
+      // document.addEventListener("webkitfullscreenchange", fullChange);
+      document.addEventListener("webkitfullscreenchange", fullChange);
+      // document.addEventListener('fullscreenchange', fullChange);
+      $('#video').on('webkitendfullscreen', fullChange)
+      $('#video').on('x5videoexitfullscreen', fullChange)
+    }
+    //退出全屏 
+    function exitFullscreen() {
+      console.log('exitFullscreen')
+      if (document.getElementById('video').exitFullscreen) {
+        document.getElementById('video').exitFullscreen();
+      } else if (document.getElementById('video').msExitFullscreen) {
+        document.getElementById('video').msExitFullscreen();
+      } else if (document.getElementById('video').mozCancelFullScreen) {
+        document.getElementById('video').mozCancelFullScreen();
+      } else if (document.getElementById('video').webkitExitFullscreen) {
+        document.getElementById('video').webkitExitFullscreen();
+      }
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+    // // IOS中退出全屏事件
+    // $('#video').on('webkitendfullscreen', function() {
+    // });
+
+    // // Android中退出全屏事件
+    // $('#video').on('x5videoexitfullscreen', function() {
+    // });
+
+
+
+    function fullChange(event) {
+      if (IsFull()) {
+        console.log('进入全屏')
+      } else {
+        console.log('退出全屏')
+        exitVideo()
+      }
+    }
+    function exitVideo() {
+   
+      document.getElementById('video').pause();
+      $('#video').css({ 'display': 'none' });
+      if ($('.audioBtn').hasClass('play')) {
+      $('#audios')[0].play();
+      }
+      document.removeEventListener("webkitfullscreenchange", fullChange);
+      $('#video').unbind('webkitendfullscreen', fullChange)
+      $('#video').unbind('x5videoexitfullscreen', fullChange)
+    }
+    //判断是否全屏
+    function IsFull() {
+      var fullscreenElement =
+        document.fullscreenElement
+        || document.mozFullscreenElement
+        || document.webkitFullscreenElement;
+      var fullscreenEnabled =
+        document.fullscreenEnabled
+        || document.mozFullscreenEnabled
+        || document.webkitFullscreenEnabled;
+      if (fullscreenElement == null) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    var cdnUrl = './'
+    var loadingArr = ['ibg.jpg?999'];
+    var imgDir = (cdnUrl || '')
+    var lnums = loadingArr.length;
+    var lstart = 0;
+
+
+    function loadingStart() {
+      // 加载开始
+      var img_arr = [
+        'img/old/0-tiny.jpg',
+        'img/old/1-tiny.jpg',
+        'img/again.png',
+        'img/close.png',
+        'img/ibg.jpg',
+        'img/ico_close.png',
+        'img/ico_VR.png',
+        'img/last.png',
+        'img/loading_gif.png',
+        'img/next.png',
+        'img/no1.png',
+        'img/no2.png',
+        'img/pause.png',
+        'img/play.png',
+        'img/share.png',
+        'img/voice_close.png',
+        'img/voice_open.png',
+        'img/voice.gif',
+      ];
+      var nums = img_arr.length;
+      var start = 0;
+      for (var i in img_arr) {
+        if (img_arr[i].slice(-3) == 'mp3') {
+          // 
+          $.ajax({
+            url:cdnUrl+ 'img/' + img_arr[i],// 跳转到 action    
+            type: "GET",
+            dataType: "text",
+            success: function (arrayBuffer) {
+              start++;
+              if (start == nums) {
+                console.log('全部加载完成');
+                setTimeout(()=>{
+                    $('.loading').animate({ opacity: 0 }, 300, function () {
+                    $('.loading').css({ 'display': 'none' })
+                     secenStart()
+                  })
+                  },1000)
+              }
+              $('#loading_pro').html(Math.floor((start / nums) * 100) + '%');
+              $('.loading_top_word,.loading_bottom_word').css({ 'opacity': start / nums })
+            }
+          })
+        } else {
+          var img = document.createElement('img');
+          img.src = imgDir + img_arr[i];
+          (function (j) {
+            try {
+              img.onload = function () {
+                start++;
+                if (start == nums) {
+                  console.log('全部加载完成');
+                  setTimeout(()=>{
+                    $('.loading').animate({ opacity: 0 }, 300, function () {
+                    $('.loading').css({ 'display': 'none' })
+                     secenStart()
+                  })
+                  },1000)
+                 
+                }
+                $('#loading_pro').html(Math.floor((start / nums) * 100) + '%');
+                $('.loading_top_word,.loading_bottom_word').css({ 'opacity': start / nums })
+              };
+              img.onerror = function () {
+                start++;
+                console.log(img_arr[j] + '失败');
+                $('#loading_pro').html(Math.floor((start / nums) * 100) + '%');
+                $('.loading_top_word,.loading_bottom_word').css({ 'opacity': start / nums })
+              }
+            } catch (e) {
+              setTimeout(()=>{
+                    $('.loading').animate({ opacity: 0 }, 300, function () {
+                    $('.loading').css({ 'display': 'none' })
+                     secenStart()
+                  })
+                  },1000)
+            }
+          })(i);
+        }
+
+      }
+    }
+    function secenStart() {
+      setTimeout(() => {
+      viewer.animate({
+        longitude: 0,
+        latitude: '0deg',
+        speed: '5rpm',
+      })
+    }, 1000)
+    }
+    $(window).load(function () {
+      for (var j in loadingArr) {
+        var img = document.createElement('img');
+        img.src = './img/' + loadingArr[j];
+        (function (jj) {
+          img.onload = function () {
+            lstart++;
+            if (lstart == lnums) {
+              // if(!iswx()){
+              loadingStart()
+              // }
+            }
+          }
+        })(j);
+      }
+
+    })
+    $(".shareBtn").on("click",function(){
+      const iarr = ['s1.jpg?20210720','s2.jpg?20210720']
+     // const imgUrl = iarr[Math.floor(Math.random()*iarr.length)]
+    const imgUrl = iarr[num-1]
+    //$('#shareImg').attr({'src':'./img/share/'+imgUrl})
+    drawCanvas(imgUrl)
+    $('.shareInfo').css({'display':'flex'})
+     $('.mask').css({'display':'none'})
+    })
+    $('.backBtn2').click(function(){
+    $('.shareInfo').css({'display':'none'})
+  })
+  </script>
+</body>
+
+</html>
